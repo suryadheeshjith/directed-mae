@@ -1,0 +1,71 @@
+# @package _global_
+defaults:
+  - _self_
+
+experiment: main_dino
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+use_fp16: False
+saveckp_freq: 20
+seed: 0
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 1
+num_workers: 4
+local_rank: 0
+rank: null
+distributed: True
+gpu: null
+dist_backend: null
+dist_on_itp: False
+dist_eval: False
+
+# training args
+batch_size_per_gpu: 64
+epochs: 800
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: "/imagenet"
+global_crops_scale: [0.25, 1.0]
+local_crops_number: 10
+local_crops_scale: [0.05, 0.25]
+limit: -1
+
+
+# model parameters
+arch: vit_small
+patch_size: 16
+out_dim: 65536
+norm_last_layer: False
+momentum_teacher: 0.996
+use_bn_in_head: False
+warmup_teacher_temp: 0.04
+teacher_temp: 0.04
+warmup_teacher_temp_epochs: 30
+freeze_last_layer: 1
+
+# optimizer parameters
+lr: 0.002
+warmup_epochs: 10
+min_lr: 1e-5
+optimizer: adamw
+weight_decay: 0.04
+weight_decay_end: 0.4
+clip_grad: 0
+drop_path_rate: 0.1
+
+
+
+
+
+
+
+
+
+
+
+

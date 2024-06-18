@@ -1,0 +1,77 @@
+# @package _global_
+defaults:
+  - _self_
+
+experiment: mae_dino
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+save_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},save_dir}
+use_fp16: False
+saveckp_freq: 20
+seed: 0
+wandb: True
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 1 # 4 
+rank: null
+distributed: True
+gpu: null
+dist_backend: null
+dist_on_itp: False
+dist_eval: False
+
+# training args
+epochs: 1 # 800
+limit: 20 # -1
+save_images: False
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: "/vast/sd5313/data/imagenet_10"
+
+# crop
+crop_type: random_proximal # random, mae, random_proximal
+crop_store: null
+mae_model: mae_vit_large_patch16
+input_size: 224
+norm_pix_loss: True
+global_crops_number: 1 # Teacher sees these crops
+global_crops_scale: [0.25, 1.0]
+local_crops_number: 10 # Student sees these crops
+local_crops_scale: [0.05, 0.25]
+global_size: 224 
+local_size: 96
+# crop_proposal_p: 0.0 # If 1.0, then always use crop proposal, if < 1.0, then with probability (1.0 - crop_proposal_p), random crop will be chosen
+crop_noise_factor: 1 # 2 # Crop will be within [-crop_noise_factor, +crop_noise_factor] x patch_size of actual crop proposal
+
+batch_size: 64 # ${mae_crop.batch_size}
+num_workers: 4
+pin_mem: True
+
+# model parameters
+arch: vit_small
+patch_size: 16
+out_dim: 65536
+norm_last_layer: False
+momentum_teacher: 0.996
+use_bn_in_head: False
+warmup_teacher_temp: 0.04
+teacher_temp: 0.07
+warmup_teacher_temp_epochs: 0 # 30
+freeze_last_layer: 1
+
+# optimizer parameters
+lr: 0.002
+warmup_epochs: 0 # 10
+min_lr: 1e-5
+optimizer: adamw
+weight_decay: 0.04
+weight_decay_end: 0.4
+clip_grad: 0
+drop_path_rate: 0.1
+
+
+

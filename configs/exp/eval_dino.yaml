@@ -1,0 +1,61 @@
+# @package _global_
+defaults:
+  - _self_
+
+experiment: eval_dino
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+pretrained_weights: /scratch/sd5313/CILVR/fall23/directed-mae/mae_dino/2023-12-04-4GPU_800_crop4x4x/checkpoint0780.pth # '/scratch/sd5313/CILVR/fall23/directed-mae/weights/dino_deitsmall16_pretrain.pth' 
+pretrained_linear_weights: ''
+checkpoint_key: "teacher"
+val_freq: 1
+evaluate: False
+wandb: False
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 1
+num_workers: 4
+local_rank: 0
+rank: null
+distributed: True
+gpu: null
+dist_backend: null
+dist_on_itp: False
+dist_eval: False
+
+# training args
+batch_size_per_gpu: 64
+epochs: 100
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: "/vast/sd5313/data/imagenet_10" # "/imagenet"
+num_labels: 10
+limit: -1
+
+
+# model parameters
+arch: vit_small
+patch_size: 16
+n_last_blocks: 4
+avgpool_patchtokens: False
+
+# optimizer parameters
+lr: 0.001
+
+
+
+
+
+
+
+
+
+
+
+
+
+

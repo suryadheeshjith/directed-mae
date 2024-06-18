@@ -1,0 +1,67 @@
+# @package _global_
+defaults:
+  - _self_
+
+experiment: mae_crop
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+save_dir: null
+seed: 0
+start_epoch: 0
+save_freq: 20
+resume: "/scratch/sd5313/CILVR/fall23/directed-mae/weights/mae_pretrain_vit_large_full.pth"
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 1
+rank: null
+distributed: True
+gpu: null
+dist_backend: null
+dist_on_itp: False
+dist_eval: False
+
+# training args
+# epochs: 10
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: "/vast/sd5313/data/imagenet_10" # "/imagenet"
+batch_size: 32
+num_workers: 10
+pin_mem: True
+limit: -1
+eval_shuffle: true
+global_crops_number: 2
+global_crops_scale: [0.25, 1.0]
+local_crops_number: 10
+local_crops_scale: [0.05, 0.25]
+
+# model parameters
+model: mae_vit_large_patch16
+input_size: 224
+norm_pix_loss: True
+
+# Comment one of these :::
+### Positional Block
+# mask_type: positional_block 
+# mask_stride: 1 
+# # Single mask ratio
+# u_mask_ratio: 0.75
+# # get top_k masks
+# top_k: 2
+# pos_log_period: 1
+
+### Random Block
+mask_type: random_block 
+num_random_masks: 5 # For random_block masking, generating multiple random masks for a single image.
+# Range of mask ratios
+l_mask_ratio: 0.3
+u_mask_ratio: 0.75
+# get top_k masks
+top_k: 2
+
+
+

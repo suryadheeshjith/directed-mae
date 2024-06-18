@@ -1,0 +1,63 @@
+# @package _global_
+defaults:
+  - _self_
+
+experiment: main_pretrain
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+checkpoint_dir: null
+save_dir: null
+log_dir: null
+device: cuda
+seed: 0
+start_epoch: 0
+save_freq: 20
+resume: "/scratch/sd5313/CILVR/fall23/directed-mae/weights/mae_pretrain_vit_large_full.pth"
+eval: False
+wandb: False
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 2
+rank: null
+distributed: True
+gpu: null
+dist_backend: null
+dist_on_itp: False
+dist_eval: False
+
+# training args
+epochs: 10
+accum_iter: 1
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: "/imagenet"
+batch_size: 32
+num_workers: 12
+pin_mem: True
+data_mask: 0.5
+limit: 10000
+eval_shuffle: true
+
+# model parameters
+model: mae_vit_large_patch16
+input_size: 224
+l_mask_ratio: 0.0
+# This is the default mask ratio when using only a value and not a range
+u_mask_ratio: 0.75
+mask_type: random
+mask_stride: 1
+pos_log_period: 1
+duplicate_comparison: 0
+norm_pix_loss: True
+
+# optimizer parameters
+weight_decay: 0.05
+lr: null
+blr: 1.5e-4
+min_lr: 0.
+warmup_epochs: 40
+fp16: True

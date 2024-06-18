@@ -1,0 +1,79 @@
+# @package _global_
+defaults:
+  - _self_
+  - mae_crop@mae_crop: ../mae_crop
+
+experiment: mae_dino
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+save_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},save_dir}
+use_fp16: False
+saveckp_freq: 20
+seed: 0
+wandb: True
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 1 #4 
+rank: null
+distributed: True
+gpu: null
+dist_backend: null
+dist_on_itp: False
+dist_eval: False
+
+# training args
+epochs: 1 #800
+limit: 100 # ${mae_crop.limit} # 100
+save_images: True
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: ${mae_crop.data_path}
+
+# MAE crop
+crop_type: mae # random, mae
+crop_store: "/scratch/sd5313/CILVR/fall23/directed-mae/mae_crop/2023-12-04-1GPU_save_crops_100004x4x/crop_coords.pth"
+mae_model: ${mae_crop.model}
+input_size: ${mae_crop.input_size}
+norm_pix_loss: ${mae_crop.norm_pix_loss}
+global_crops_number: ${mae_crop.global_crops_number}
+global_crops_scale: ${mae_crop.global_crops_scale}
+local_crops_number: ${mae_crop.local_crops_number}
+local_crops_scale: ${mae_crop.local_crops_scale}
+crop_proposal_p: 1.0 # If 1.0, then always use crop proposal, if < 1.0, then with probability (1.0 - crop_proposal_p), random crop will be chosen
+crop_noise_factor: 2 # 2 # Crop will be within [-crop_noise_factor, +crop_noise_factor] x patch_size of actual crop proposal
+global_size: 224
+local_size: 96
+
+batch_size: 64 # ${mae_crop.batch_size}
+num_workers: 4
+pin_mem: True
+# # data_mask: 0.5 # ?
+
+# model parameters
+arch: vit_small
+patch_size: 16
+out_dim: 65536
+norm_last_layer: False
+momentum_teacher: 0.996
+use_bn_in_head: False
+warmup_teacher_temp: 0.04
+teacher_temp: 0.07
+warmup_teacher_temp_epochs: 0 # 30
+freeze_last_layer: 1
+
+# optimizer parameters
+lr: 0.002
+warmup_epochs: 0 # 10
+min_lr: 1e-5
+optimizer: adamw
+weight_decay: 0.04
+weight_decay_end: 0.4
+clip_grad: 0
+drop_path_rate: 0.1
+
+
+

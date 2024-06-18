@@ -1,0 +1,74 @@
+# @package _global_
+defaults:
+  - _self_
+
+experiment: main_finetune
+
+# experiment args
+output_dir: ${join_path:${hydra:sweep.dir},${hydra:sweep.subdir}}
+checkpoint_dir: null
+save_dir: null
+log_dir: null
+device: cuda
+seed: 0
+start_epoch: 0
+save_freq: 20
+eval: False
+resume: "/scratch/sd5313/CILVR/fall23/directed-mae/weights/mae_finetuned_vit_large.pth"
+wandb: True
+
+# distributed args
+# dist_url: ${add_uuid:file://${abs_path:${join_path:${hydra:sweep.dir},${hydra:sweep.subdir},dist_url_init}}}
+dist_url: "env://"
+world_size: 1
+rank: null
+distributed: null
+gpu: null
+dist_backend: null
+dist_eval: True
+dist_on_itp: False
+
+# training args
+epochs: 1
+accum_iter: 1
+
+# data parameters
+data_overlay: "/scratch/work/public/ml-datasets/imagenet/imagenet-train.sqf:ro,/scratch/work/public/ml-datasets/imagenet/imagenet-val.sqf:ro"
+data_path: "/imagenet"
+batch_size: 16
+num_workers: 12
+pin_mem: True
+color_jitter: 0
+aa: null
+reprob: 0.0
+remode: 'const'
+recount: 1
+mixup: 0
+cutmix: 0
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: "batch"
+cutmix_minmax: null
+nb_classes: 1000
+drop_path: 0.1
+global_pool: True
+finetune: ""
+smoothing: 0.1
+clip_grad: null
+limit: 64
+
+
+# model parameters
+model: vit_large_patch16
+input_size: 224
+mask_ratio: 1.0
+norm_pix_loss: True
+
+# optimizer parameters
+weight_decay: 0.05
+lr: null
+blr: 1.5e-4
+min_lr: 0.
+warmup_epochs: 40
+fp16: True
+layer_decay: 0.75
